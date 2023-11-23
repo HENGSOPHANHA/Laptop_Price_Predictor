@@ -93,4 +93,4 @@ if st.button('Predict Price'):
     prediction = int(np.exp(prediction)) 
 
     st.title("Predicted price for this laptop could be between " +
-             str(prediction-1000)+"₹" + " to " + str(prediction+1000)+"₹")
+             str(prediction)+"$" + " to " + str(prediction)+"$")
