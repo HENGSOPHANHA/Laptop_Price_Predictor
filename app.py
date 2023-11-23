@@ -66,8 +66,8 @@ ssd = st.selectbox('SSD(in GB)', [0, 8, 128, 256, 512, 1024])
 
 gpu = st.selectbox('GPU(in GB)', data['Gpu brand'].unique())
 
+# ...
 if st.button('Predict Price'):
-
     ppi = None
     if touchscreen == 'Yes':
         touchscreen = 1
@@ -82,15 +82,16 @@ if st.button('Predict Price'):
     X_resolution = int(resolution.split('x')[0])
     Y_resolution = int(resolution.split('x')[1])
 
-    ppi = ((X_resolution**2)+(Y_resolution**2))**0.5/(screen_size)
+    ppi = ((X_resolution**2) + (Y_resolution**2))**0.5 / (screen_size)
 
     query = np.array([company, type, ram, weight,
                       touchscreen, ips, ppi, cpu, hdd, ssd, gpu, os])
 
     query = query.reshape(1, 12)
-  
+
     prediction = rf.predict(query)[0]
-    prediction = int(np.exp(prediction)) 
+    prediction = int(np.exp(prediction))  # Apply np.exp here
 
     st.title("Predicted price for this laptop could be between " +
-             str(prediction)+"$" + " to " + str(prediction)+"$")
+             str(prediction-10)+"$" + " to " + str(prediction+10)+"$")
+
