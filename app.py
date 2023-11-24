@@ -37,7 +37,7 @@ if st.button('Predict Price'):
     input_df = pd.concat([df, user_input], ignore_index=True)
 
     # Use get_dummies to one-hot encode categorical variables
-    input_df_encoded = pd.get_dummies(input_df, columns=['Company', 'TypeName', 'Cpu brand', 'Gpu brand', 'OpSys'])
+    input_df_encoded = pd.get_dummies(input_df, columns=['Company', 'TypeName', 'CPU_name', 'Gpu brand', 'OpSys'])
 
     # Select the last row (user input) for prediction
     user_input_encoded = input_df_encoded.iloc[[-1]]
