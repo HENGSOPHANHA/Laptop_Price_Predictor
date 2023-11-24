@@ -29,24 +29,29 @@ os = st.selectbox('OS', df['OpSys'].unique())
 
 # Button to trigger prediction
 if st.button('Predict Price'):
-    # Create a DataFrame with user inputs
-    user_input = pd.DataFrame([[company, type, ram, weight, touchscreen, ips, screen_size, resolution, cpu, hdd, ssd, gpu, os]],
-                               columns=df.columns)
 
-    # Concatenate user input with original DataFrame
-    input_df = pd.concat([df, user_input], ignore_index=True)
+    ppi = None
+    if touchscreen == 'Yes':
+        touchscreen = 1
+    else:
+        touchscreen = 0
 
-    # Use get_dummies to one-hot encode categorical variables
-    input_df_encoded = pd.get_dummies(input_df, columns=['Company', 'TypeName', 'CPU_name', 'Gpu brand', 'OpSys'])
+    if ips == 'Yes':
+        ips = 1
+    else:
+        ips = 0
 
-    # Select the last row (user input) for prediction
-    user_input_encoded = input_df_encoded.iloc[[-1]]
+    X_resolution = int(resolution.split('x')[0])
+    Y_resolution = int(resolution.split('x')[1])
 
-    # Use reshape(1, -1) instead of reshape(1, 12)
-    user_input_encoded = user_input_encoded.values.reshape(1, -1)
+    ppi = ((X_resolution**2)+(Y_resolution**2))**0.5/(screen_size)
 
-    try:
-        predicted_price = int(np.exp(pipe.predict(user_input_encoded)[0]))
-        st.title("The predicted price of this configuration is $" + str(predicted_price))
-    except ValueError as e:
-        st.error(f"Error predicting price: {e}")
+    query = np.array([company, type, ram, weight,
+                      touchscreen, ips, ppi, cpu, hdd, ssd, gpu, os])
+
+    query = query.reshape(1, 12)
+
+    prediction = int(np.exp(rf.predict(query)[0]))
+
+    st.title("Predicted price for this laptop could be between " +
+             str(prediction-100)+"$" + " to " + str(prediction+100)+"$")
