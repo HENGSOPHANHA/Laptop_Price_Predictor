@@ -48,6 +48,8 @@ gpu = st.selectbox('GPU', df['Gpu brand'].unique())
 
 os = st.selectbox('OS', df['OpSys'].unique())
 
+# ...
+
 if st.button('Predict Price'):
     # query
     ppi = None
@@ -66,7 +68,9 @@ if st.button('Predict Price'):
     ppi = ((X_res**2) + (Y_res**2))**0.5 / screen_size
     query = np.array([company, type, ram, weight, touchscreen, ips, ppi, cpu, hdd, ssd, gpu, os])
 
-    query = query.reshape(1, 12)
+    # Use reshape(1, -1) instead of reshape(1, 12)
+    query = query.reshape(1, -1)
+
     predicted_price = int(np.exp(pipe.predict(query)[0]))
 
     st.title("The predicted price of this configuration is $" + str(predicted_price))
