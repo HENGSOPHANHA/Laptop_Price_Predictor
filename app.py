@@ -17,8 +17,10 @@ from xgboost import XGBRegressor
 from sklearn.svm import SVR
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn import tree
+
 # import the model
 pipe = pickle.load(open('pipe.pkl','rb'))
+df = pickle.load(open('df.pkl','rb'))
 
 st.title("Laptop Predictor")
 
