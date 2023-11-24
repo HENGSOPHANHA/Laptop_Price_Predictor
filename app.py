@@ -85,7 +85,7 @@ if st.button('Predict Price'):
                       touchscreen, ips, ppi, cpu, hdd, ssd, gpu, os])
 
     query = query.reshape(1, 12)
-    prediction = float(np.exp(rf.predict(query)[0]))
+    prediction = float(np.exp(rf.predict(query)))
 
     st.title("Predicted price for this laptop could be between " +
                  str(prediction-10)+"$" + " to " + str(prediction+10)+"$")
