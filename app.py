@@ -11,6 +11,13 @@ pipe = pickle.load(open('pipe.pkl', 'rb'))
 # Use pd.read_pickle instead of pickle.load for loading DataFrame
 df = pd.read_pickle('df.pkl')
 
+# Define the column transformer with explicit handling of unknown categories
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), [3, 6, 9]),  # Assuming the numeric columns are at positions 3, 6, 9
+        ('cat', OneHotEncoder(handle_unknown='ignore'), [0, 1, 2, 4, 5, 7, 8, 10, 11])  # Assuming the categorical columns are at positions 0, 1, 2, 4, 5, 7, 8, 10, 11
+    ])
+
 st.title("Laptop Predictor")
 
 # brand
@@ -48,8 +55,6 @@ gpu = st.selectbox('GPU', df['Gpu brand'].unique())
 
 os = st.selectbox('OS', df['OpSys'].unique())
 
-# ...
-
 if st.button('Predict Price'):
     # query
     ppi = None
@@ -71,6 +76,11 @@ if st.button('Predict Price'):
     # Use reshape(1, -1) instead of reshape(1, 12)
     query = query.reshape(1, -1)
 
-    predicted_price = int(np.exp(pipe.predict(query)[0]))
+    try:
+        # Apply preprocessing to handle unknown categories
+        query_transformed = preprocessor.transform(pd.DataFrame([query], columns=df.columns))
+        predicted_price = int(np.exp(pipe.predict(query_transformed)[0]))
+        st.title("The predicted price of this configuration is $" + str(predicted_price))
+    except ValueError as e:
+        st.error(f"Error predicting price: {e}")
 
-    st.title("The predicted price of this configuration is $" + str(predicted_price))
