@@ -17,8 +17,6 @@ st.title("Laptop Price Predictor")
 
 company = st.selectbox('Brand', data['Company'].unique())
 
-
-
 # type of laptop
 
 type = st.selectbox('Type', data['TypeName'].unique())
@@ -67,6 +65,7 @@ ssd = st.selectbox('SSD(in GB)', [0, 8, 128, 256, 512, 1024])
 gpu = st.selectbox('GPU(in GB)', data['Gpu brand'].unique())
 
 # ...
+
 if st.button('Predict Price'):
     ppi = None
     if touchscreen == 'Yes':
@@ -89,9 +88,20 @@ if st.button('Predict Price'):
 
     query = query.reshape(1, 12)
 
-    prediction = rf.predict(query)[0]
-    prediction = int(np.exp(prediction))  # Apply np.exp here
+    print("Input query shape:", query.shape)
+    print("Input query:", query)
 
-    st.title("Predicted price for this laptop could be between " +
-             str(prediction-10)+"$" + " to " + str(prediction+10)+"$")
+    try:
+        prediction = rf.predict(query)[0]
+        print("Raw prediction:", prediction)
+
+        prediction = int(np.exp(prediction))
+        print("Transformed prediction:", prediction)
+
+        st.title("Predicted price for this laptop could be between " +
+                 str(prediction-10)+"$" + " to " + str(prediction+10)+"$")
+
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
+
 
