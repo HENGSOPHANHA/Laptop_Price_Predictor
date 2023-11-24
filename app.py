@@ -2,8 +2,6 @@ import streamlit as st
 import pickle
 import pandas as pd
 import numpy as np
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import LabelEncoder
 from xgboost import XGBRegressor
 
 # Import the model
@@ -12,76 +10,43 @@ pipe = pickle.load(open('pipe.pkl', 'rb'))
 # Use pd.read_pickle instead of pickle.load for loading DataFrame
 df = pd.read_pickle('df.pkl')
 
-# Define the column transformer with explicit handling of unknown categories
-preprocessor = ColumnTransformer(
-    transformers=[
-        ('num', StandardScaler(), [3, 6, 9]),  # Assuming the numeric columns are at positions 3, 6, 9
-        ('cat', OneHotEncoder(handle_unknown='ignore'), [0, 1, 2, 4, 5, 7, 8, 10, 11])  # Assuming the categorical columns are at positions 0, 1, 2, 4, 5, 7, 8, 10, 11
-    ])
-
 st.title("Laptop Predictor")
 
-# brand
+# Collect user inputs
 company = st.selectbox('Brand', df['Company'].unique())
-
-# type of laptop
 type = st.selectbox('Type', df['TypeName'].unique())
-
-# Ram
 ram = st.selectbox('RAM(in GB)', [2, 4, 6, 8, 12, 16, 24, 32, 64])
-
-# weight
 weight = st.number_input('Weight of the Laptop')
-
-# Touchscreen
 touchscreen = st.selectbox('Touchscreen', ['No', 'Yes'])
-
-# IPS
 ips = st.selectbox('IPS', ['No', 'Yes'])
-
-# screen size
 screen_size = st.number_input('Screen Size')
-
-# resolution
 resolution = st.selectbox('Screen Resolution', ['1920x1080', '1366x768', '1600x900', '3840x2160', '3200x1800', '2880x1800', '2560x1600', '2560x1440', '2304x1440'])
-
-# cpu
-cpu = st.selectbox('CPU', df['CPU_name'].unique())
-
+cpu = st.selectbox('CPU', df['Cpu brand'].unique())
 hdd = st.selectbox('HDD(in GB)', [0, 128, 256, 512, 1024, 2048])
-
 ssd = st.selectbox('SSD(in GB)', [0, 8, 128, 256, 512, 1024])
-
 gpu = st.selectbox('GPU', df['Gpu brand'].unique())
-
 os = st.selectbox('OS', df['OpSys'].unique())
 
+# Button to trigger prediction
 if st.button('Predict Price'):
-    # query
-    ppi = None
-    if touchscreen == 'Yes':
-        touchscreen = 1
-    else:
-        touchscreen = 0
+    # Create a DataFrame with user inputs
+    user_input = pd.DataFrame([[company, type, ram, weight, touchscreen, ips, screen_size, resolution, cpu, hdd, ssd, gpu, os]],
+                               columns=df.columns)
 
-    if ips == 'Yes':
-        ips = 1
-    else:
-        ips = 0
+    # Concatenate user input with original DataFrame
+    input_df = pd.concat([df, user_input], ignore_index=True)
 
-    X_res = int(resolution.split('x')[0])
-    Y_res = int(resolution.split('x')[1])
-    ppi = ((X_res**2) + (Y_res**2))**0.5 / screen_size
-    query = np.array([company, type, ram, weight, touchscreen, ips, ppi, cpu, hdd, ssd, gpu, os])
+    # Use get_dummies to one-hot encode categorical variables
+    input_df_encoded = pd.get_dummies(input_df, columns=['Company', 'TypeName', 'Cpu brand', 'Gpu brand', 'OpSys'])
+
+    # Select the last row (user input) for prediction
+    user_input_encoded = input_df_encoded.iloc[[-1]]
 
     # Use reshape(1, -1) instead of reshape(1, 12)
-    query = query.reshape(1, -1)
+    user_input_encoded = user_input_encoded.values.reshape(1, -1)
 
     try:
-        # Apply preprocessing to handle unknown categories
-        query_transformed = preprocessor.transform(pd.DataFrame([query], columns=df.columns))
-        predicted_price = int(np.exp(pipe.predict(query_transformed)[0]))
+        predicted_price = int(np.exp(pipe.predict(user_input_encoded)[0]))
         st.title("The predicted price of this configuration is $" + str(predicted_price))
     except ValueError as e:
         st.error(f"Error predicting price: {e}")
-
