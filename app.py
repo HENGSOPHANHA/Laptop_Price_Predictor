@@ -90,5 +90,3 @@ if st.button('Predict Price'):
 
     st.title("Predicted price for this laptop could be between " +
              str(prediction - 10) + "$" + " to " + str(prediction + 10) + "$")
-
-
