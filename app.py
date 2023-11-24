@@ -2,7 +2,20 @@ import streamlit as st
 import pickle
 import numpy as np
 import joblib
-import sklearn
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler,StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import LabelEncoder,OneHotEncoder
+from sklearn import metrics
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.linear_model import LinearRegression,Lasso,Ridge
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor,GradientBoostingRegressor
+from xgboost import XGBRegressor
+from sklearn.svm import SVR
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn import tree
 # import the model
 pipe = pickle.load(open('pipe.pkl','rb'))
 df = pickle.load(open('df.pkl','rb'))
