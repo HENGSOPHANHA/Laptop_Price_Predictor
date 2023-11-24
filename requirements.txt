@@ -4,4 +4,3 @@ joblib
 streamlit
 scikit-learn
 XGBoost
-pickle
