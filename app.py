@@ -8,7 +8,7 @@ rf = pickle.load(file1)
 file1.close()
 
 # Assuming df is your DataFrame
-df = pd.read_csv("Traineddata.csv")
+df = pd.read_csv("traineddata.csv")
 
 st.title("Laptop Price Predictor")
 
