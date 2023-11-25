@@ -30,6 +30,10 @@ ssd = st.selectbox('SSD(in GB)', [0, 8, 128, 256, 512, 1024])
 gpu = st.selectbox('GPU', df['Gpu brand'].unique())
 os = st.selectbox('OS', df['OpSys'].unique())
 
+# Check if ColumnTransformer has _feature_names_in attribute
+if hasattr(pipe.named_steps['preprocessor'], '_feature_names_in'):
+   setattr(pipe.named_steps['preprocessor'], '_feature_names_in', None)
+
 # Button to trigger prediction
 if st.button('Predict Price'):
 
