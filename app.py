@@ -49,13 +49,24 @@ if st.button('Predict Price'):
 
     ppi = ((X_resolution**2)+(Y_resolution**2))**0.5/(screen_size)
 
-    query = np.array([company, type, ram, weight,
-                      touchscreen, ips, ppi, cpu, hdd, ssd, gpu, os])
+    # Create a DataFrame with the input data for transformation
+    input_data = pd.DataFrame([{
+        'Company': company,
+        'TypeName': type,
+        'Ram': ram,
+        'Weight': weight,
+        'TouchScreen': touchscreen,
+        'IPS': ips,
+        'PPI': ppi,
+        'CPU_name': cpu,
+        'HDD': hdd,
+        'SSD': ssd,
+        'Gpu brand': gpu,
+        'OpSys': os
+    }])
 
-    query = query.reshape(1, -1)
-
-    # Use `pipe` for prediction instead of `rf`
-    prediction = int(np.exp(pipe.predict(query)[0]))
+    # Use pipe.predict instead of pipe.predict
+    prediction = int(np.exp(pipe.predict(input_data)[0]))
 
     st.title("Predicted price for this laptop could be between " +
              str(prediction-100)+"$" + " to " + str(prediction+100)+"$")
