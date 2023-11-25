@@ -13,10 +13,6 @@ pipe = pickle.load(open('pipe.pkl', 'rb'))
 # Use pd.read_pickle instead of pickle.load for loading DataFrame
 df = pd.read_pickle('df.pkl')
 
-# Ensure the ColumnTransformer is using scikit-learn version >= 0.24.0
-if hasattr(pipe.named_steps['preprocessor'], '_feature_names_in'):
-   setattr(pipe.named_steps['preprocessor'], '_feature_names_in', None)
-
 st.title("Laptop Predictor")
 
 # Collect user inputs
