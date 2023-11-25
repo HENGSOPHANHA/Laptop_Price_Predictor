@@ -52,7 +52,7 @@ if st.button('Predict Price'):
     query = np.array([company, type, ram, weight,
                       touchscreen, ips, ppi, cpu, hdd, ssd, gpu, os])
 
-    query = query.reshape(1, 12)
+    query = query.reshape(1, -1)
 
     # Use `pipe` for prediction instead of `rf`
     prediction = int(np.exp(pipe.predict(query)[0]))
