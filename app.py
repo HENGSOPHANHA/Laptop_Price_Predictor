@@ -8,7 +8,7 @@ rf = pickle.load(file1)
 file1.close()
 
 # Assuming df is your DataFrame
-df = pd.read_csv("traineddata.csv")
+df = pd.read_csv("your_data.csv")
 
 st.title("Laptop Price Predictor")
 
@@ -20,19 +20,14 @@ weight = st.number_input('Weight of the laptop')
 touchscreen = st.selectbox('Touchscreen', df['TouchScreen'].unique())
 ips = st.selectbox('IPS', df['IPS'].unique())
 screen_size = st.number_input('Screen Size')
-resolution = st.selectbox('Screen Resolution', df['PPI'].unique())
+resolution = st.number_input('Screen Resolution (PPI)')
 cpu = st.selectbox('CPU', df['CPU_name'].unique())
 hdd = st.selectbox('HDD(in GB)', df['HDD'].unique())
 ssd = st.selectbox('SSD(in GB)', df['SSD'].unique())
 gpu = st.selectbox('GPU Brand', df['Gpu brand'].unique())
 
 if st.button('Predict Price'):
-    ppi = None
-
-    X_resolution = int(resolution.split('x')[0])
-    Y_resolution = int(resolution.split('x')[1])
-
-    ppi = ((X_resolution**2) + (Y_resolution**2))**0.5 / (screen_size)
+    ppi = resolution / screen_size
 
     query = pd.DataFrame({
         'Company': [company],
