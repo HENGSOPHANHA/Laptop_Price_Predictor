@@ -11,7 +11,7 @@ df = pickle.load(open('df.pkl','rb'))
 
 st.title("Laptop Predictor")
 
-Apple,Ultrabook,8,Mac,1.37,0,1,226.98300468106115,Intel Core i5,0,128,Intel
+#Apple,Ultrabook,8,Mac,1.37,0,1,226.98300468106115,Intel Core i5,0,128,Intel
 
 data = pd.read_csv("traineddata.csv")
 
