@@ -13,6 +13,12 @@ pipe = pickle.load(open('pipe.pkl', 'rb'))
 # Use pd.read_pickle instead of pickle.load for loading DataFrame
 df = pd.read_pickle('df.pkl')
 
+# Apple,Ultrabook,8,Mac,1.37,0,1,226.98300468106115,Intel Core i5,0,128,Intel
+
+data = pd.read_csv("traineddata.csv")
+
+data['IPS'].unique()
+
 st.title("Laptop Predictor")
 
 # Collect user inputs
@@ -29,10 +35,6 @@ hdd = st.selectbox('HDD(in GB)', [0, 128, 256, 512, 1024, 2048])
 ssd = st.selectbox('SSD(in GB)', [0, 8, 128, 256, 512, 1024])
 gpu = st.selectbox('GPU', df['Gpu brand'].unique())
 os = st.selectbox('OS', df['OpSys'].unique())
-
-# Check if ColumnTransformer has _feature_names_in attribute
-if hasattr(pipe.named_steps['preprocessor'], '_feature_names_in'):
-   setattr(pipe.named_steps['preprocessor'], '_feature_names_in', None)
 
 # Button to trigger prediction
 if st.button('Predict Price'):
