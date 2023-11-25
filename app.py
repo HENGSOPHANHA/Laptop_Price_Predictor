@@ -72,7 +72,7 @@ if st.button('Predict Price'):
     }])
 
     # Use pipe.predict instead of pipe.predict
-    prediction = int(np.exp(pipe.predict(input_data)[0]))
+    prediction = int(np.exp(pipe.named_steps['xgbregressor'].predict(input_data)[0]))
 
     st.title("Predicted price for this laptop could be between " +
              str(prediction-100)+"$" + " to " + str(prediction+100)+"$")
