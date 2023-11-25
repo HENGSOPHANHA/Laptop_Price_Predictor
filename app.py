@@ -31,7 +31,8 @@ laptop_type =  st.selectbox('Type', data['TypeName'].unique())
 # Add other inputs
 
 # Create features dataframe
-X = pd.DataFrame(data=[[laptop_brand, laptop_type, ..., gpu, os]]) 
+X = pd.DataFrame(data=[[laptop_brand, laptop_type, ram, weight,
+                      touchscreen, ips, ppi, cpu, hdd, ssd, gpu, os]]) 
 
 # Validate inputs
 if st.button("Predict"):
