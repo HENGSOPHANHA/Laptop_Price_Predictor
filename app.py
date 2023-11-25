@@ -3,14 +3,22 @@ import streamlit as st
 import sklearn
 import pickle
 import numpy as np
+import io
 
 st.set_page_config(page_title="Laptop Price Predictor", page_icon="💻",
                    layout="wide")
 
 #import model
 st.title("Laptop Price Predictor 💻")
-pipe=pickle.load(open("pipe.pkl","rb"))
-df=pickle.load(open("df.pkl","rb"))
+
+# Method 2: Using io.BytesIO for in-memory loading
+with open('pipe.pkl', 'rb') as file1:
+    pipe_bytes = io.BytesIO(file1.read())
+    pipe = pickle.load(pipe_bytes)
+
+with open('df.pkl', 'rb') as file2:
+    df_bytes = io.BytesIO(file2.read())
+    df = pickle.load(df_bytes)
 
 # making 3 cols left_column, middle_column, right_column
 left_column, middle_column, right_column = st.columns(3)
