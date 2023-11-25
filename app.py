@@ -3,6 +3,9 @@ import pickle
 import pandas as pd
 import numpy as np
 from xgboost import XGBRegressor
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 # Import the model
 pipe = pickle.load(open('pipe.pkl', 'rb'))
