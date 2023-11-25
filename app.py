@@ -2,11 +2,19 @@ import streamlit as st
 import pickle
 import numpy as np
 import joblib
-import sklearn
-# import the model
-pipe = pickle.load(open('pipe.pkl','rb'))
-joblib.dump(df, 'df.pkl')
-df = joblib.load('df.pkl')
+import pandas as pd  # Add this import for pd
+
+# Load the model
+pipe = pickle.load(open('pipe.pkl', 'rb'))
+
+# Load or create the dataframe
+df_path = 'df.pkl'
+
+try:
+    df = joblib.load(df_path)
+except FileNotFoundError:
+    # If the file is not found, create an empty dataframe
+    df = pd.DataFrame()
 
 st.title("Laptop Predictor")
 
@@ -69,9 +77,29 @@ if st.button('Predict Price'):
 
     X_res = int(resolution.split('x')[0])
     Y_res = int(resolution.split('x')[1])
-    ppi = ((X_res**2) + (Y_res**2))**0.5/screen_size
-    query = np.array([company,type,ram,weight,touchscreen,ips,ppi,cpu,hdd,ssd,gpu,os])
+    ppi = ((X_res**2) + (Y_res**2))**0.5 / screen_size
 
-    query = query.reshape(1,12)
-    st.title("The predicted price of this configuration is " + str(int(np.exp(pipe.predict(query)[0]))))
+    # Creating a DataFrame for the query
+    query_df = pd.DataFrame([{
+        'Company': company,
+        'TypeName': type,
+        'Ram': ram,
+        'Weight': weight,
+        'Touchscreen': touchscreen,
+        'IPS': ips,
+        'PPI': ppi,
+        'Cpu brand': cpu,
+        'HDD': hdd,
+        'SSD': ssd,
+        'Gpu brand': gpu,
+        'os': os
+    }])
+
+    # Concatenate the query DataFrame with the main DataFrame
+    df = pd.concat([df, query_df], ignore_index=True)
+
+    # Assuming 'pipe' is a trained model pipeline
+    prediction = np.exp(pipe.predict(query_df))[0]
+
+    st.title("The predicted price of this configuration is $" + str(int(prediction)))
 
