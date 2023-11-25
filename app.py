@@ -5,9 +5,8 @@ import joblib
 import sklearn
 # import the model
 pipe = pickle.load(open('pipe.pkl','rb'))
-df = pickle.load(open('df.pkl','rb'))
-
-
+joblib.dump(df, 'df.pkl')
+df = joblib.load('df.pkl')
 
 st.title("Laptop Predictor")
 
