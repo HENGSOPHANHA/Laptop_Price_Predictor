@@ -24,10 +24,6 @@ rf_model = load_model()
 # Title 
 st.title("Laptop Price Predictor")
 
-# Image 
-img = Image.open('laptop.jpg')
-st.image(img, width=300)
-
 # Inputs
 laptop_brand = st.selectbox('Brand', data['Company'].unique())
 laptop_type =  st.selectbox('Type', data['TypeName'].unique())  
