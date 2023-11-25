@@ -51,7 +51,8 @@ if st.button('Predict Price'):
 
     query = query.reshape(1, 12)
 
-    prediction = int(np.exp(rf.predict(query)[0]))
+    # Use `pipe` for prediction instead of `rf`
+    prediction = int(np.exp(pipe.predict(query)[0]))
 
     st.title("Predicted price for this laptop could be between " +
              str(prediction-100)+"$" + " to " + str(prediction+100)+"$")
