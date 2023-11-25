@@ -73,7 +73,7 @@ if st.button('Predict Price'):
                       touchscreen, ips, ppi, cpu, hdd, ssd, gpu, os]], columns=data.columns[:-1])
 
     # Assuming 'preprocessor' is the name of the ColumnTransformer in your pipeline
-    column_transformer = rf.named_steps['preprocessor']
+    column_transformer = rf.named_steps['Gpu brand']
 
     # Use the transform method directly on the column transformer
     query_transformed = column_transformer.transform(query)
