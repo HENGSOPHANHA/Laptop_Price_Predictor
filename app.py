@@ -21,9 +21,6 @@ def load_model():
 data = load_data()
 rf_model = load_model() 
 
-# Page config
-st.set_page_config(page_title="Laptop Price Predictor", page_icon=":computer:")
-
 # Title 
 st.title("Laptop Price Predictor")
 
