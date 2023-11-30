@@ -1,2 +1,2 @@
-streamlit
+streamlit==0.87.0
 scikit-learn==1.2
