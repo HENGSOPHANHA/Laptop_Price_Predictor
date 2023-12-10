@@ -1,7 +1,6 @@
-
 streamlit
 pandas
 numpy
-scikit-learn
+scikit-learn==0.24.1  # Example version, replace with the version used for training
 matplotlib
 seaborn
