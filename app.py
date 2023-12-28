@@ -1,43 +1,78 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
 import pickle
+import sklearn
+import numpy as np
 
-# Load the trained model
-@st.cache
-def load_model():
-    with open('laptoppricepredictor.pkl', 'rb') as file:
-        model = pickle.load(file)
-    return model
+st.title("Laptop Price Predictor")
 
-model = load_model()
+pipe = pickle.load(open('pipe.pkl', 'rb'))
+df = pickle.load(open('df.pkl', 'rb'))
 
-# Streamlit application
-def main():
-    st.title('Laptop Price Predictor')
+# brand
+company = st.selectbox('Brand', df['Company'].unique())
 
-    # Define the input fields for the features used in the model as selectboxes
-    # Note: The options provided here are placeholders. Replace them with actual options from your dataset.
-    company = st.selectbox('Select Company', ['HP', 'Dell', 'Lenovo', 'Asus', 'Apple', 'Acer', 'Microsoft', 'Toshiba', 'Other'])
-    type_name = st.selectbox('Select Type', ['Ultrabook', 'Notebook', 'Gaming', '2-in-1 Convertible', 'Workstation', 'Netbook', 'Other'])
-    inches = st.selectbox('Select Screen Size (in Inches)', ['10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'])
-    screen_resolution = st.selectbox('Select Screen Resolution', ['1920x1080', '1366x768', '1600x900', '3840x2160', 'Other'])
-    cpu = st.selectbox('Select CPU Model', ['Intel Core i3', 'Intel Core i5', 'Intel Core i7', 'Intel Core i9', 'AMD Ryzen', 'Other'])
-    ram = st.selectbox('Select RAM (GB)', ['4', '8', '16', '32', '64', 'Other'])
-    memory = st.selectbox('Select Memory', ['128GB SSD', '256GB SSD', '512GB SSD', '1TB SSD', '2TB SSD', 'Other'])
-    gpu = st.selectbox('Select GPU Model', ['NVIDIA', 'AMD Radeon', 'Intel', 'Other'])
-    op_sys = st.selectbox('Select Operating System', ['Windows 10', 'Windows 7', 'Linux', 'MacOS', 'Chrome OS', 'Other'])
-    weight = st.selectbox('Select Weight (kg)', ['1', '1.5', '2', '2.5', '3', '3.5', '4', 'Other'])
+# type of laptop
+laptop_type = st.selectbox('Type', df['TypeName'].unique())
 
-    # Predict button
-    if st.button('Predict Price'):
-        # Prepare the feature array for prediction
-        # Here, you might need to process these features (e.g., encoding) before prediction
-        features = np.array([[company, type_name, inches, screen_resolution, cpu, ram, memory, gpu, op_sys, weight]])
+# Ram
+ram = st.selectbox('Ram(in GB)', [2, 4, 6, 8, 12, 16, 24, 32, 64])
 
-        # Predicting the price
-        predicted_price = model.predict(features)
-        st.success(f'The predicted price of the laptop is approximately ${predicted_price[0]:.2f}')
+# weight
+weight = st.number_input("weight of the laptop")
 
-if __name__ == '__main__':
-    main()
+# Touchscreen
+touchscreen = st.selectbox('TouchScreen', ['NO', 'Yes'])
+
+# Touchscreen
+ips = st.selectbox('IPS', ['NO', 'Yes'])
+
+
+# Screen size
+Screen_size = st.number_input('Screen Size')
+
+# Resolution
+resolution = st.selectbox('Screen Resolution', ['1920x1080', '1366x768', '1600x900', '3840x2160', 
+                                                '3200x1800','2880x1800', '2560x1600', '2560x1440', 
+                                                '2304x1440'])
+
+# CPU
+cpu = st.selectbox('CPU', df['Cpu brand'].unique())
+
+# hardware
+hdd = st.selectbox('HDD(in GB)', [0, 128, 256, 512, 1024, 2048])
+ssd = st.selectbox('SSD(in GB)', [0, 8, 128, 256, 512, 1024])
+
+# GPU
+gpu = st.selectbox('GPU', df['Gpu brand'].unique())
+
+# type of OS
+os = st.selectbox('Operating System', df['os'].unique())
+
+if st.button('Predict Price'):
+
+    if touchscreen == 'Yes':
+        touchscreen = 1
+    else:
+        touchscreen = 0
+
+    if ips == 'Yes':
+        ips = 1
+    else:
+        ips = 0
+    x_res = int(resolution.split('x')[0])
+    y_res = int(resolution.split('x')[1])
+    ppi = ((x_res**2) + (y_res**2))**0.5/Screen_size
+    query = np.array([company, laptop_type, ram, weight, touchscreen, ips, ppi, cpu, hdd, ssd, gpu, os], dtype=object)
+
+    query = query.reshape(1, 12)
+    st.title("Predicted Price is $ " + str(int(np.exp(pipe.predict(query)))))
+
+
+
+
+
+
+
+
+
+
