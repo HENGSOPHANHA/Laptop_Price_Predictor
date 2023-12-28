@@ -1,6 +1,7 @@
-streamlit
-pandas
-numpy
-scikit-learn==0.24.1  # Example version, replace with the version used for training
-matplotlib
-seaborn
+streamlit==1.23.1
+scikit-learn==1.0.2
+pandas==1.3.5
+numpy==1.21.6
+pickle-mixin==1.0.2
+pickleshare==0.7.5
+xgboost==1.6.2
