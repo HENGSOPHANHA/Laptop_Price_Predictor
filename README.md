@@ -30,4 +30,4 @@ To run this project locally, you will need Python installed on your system. Then
 To run the Streamlit app, execute the following command from the project directory:
 
 ```bash
-streamlit run streamlit_app.py
+streamlit run app.py
