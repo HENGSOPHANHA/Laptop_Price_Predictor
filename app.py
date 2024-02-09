@@ -1,78 +1,58 @@
 import streamlit as st
-import pickle
-import sklearn
+import pandas as pd
 import numpy as np
+import joblib
 
-st.title("Laptop Price Predictor")
+# Correct path to your saved model
+model_path = 'laptop_price_predictor.pkl'  # Just pass the file path as a string
 
-pipe = pickle.load(open('pipe.pkl', 'rb'))
-df = pickle.load(open('data.pkl', 'rb'))
+# Load the trained pipeline
+pipeline = joblib.load(model_path)  # This should now work correctly
 
-# brand
-company = st.selectbox('Brand', df['Company'].unique())
+# Streamlit app
+def run():
+    st.title('Laptop Price Predictor')
 
-# type of laptop
-laptop_type = st.selectbox('Type', df['TypeName'].unique())
+    # Input fields
+    company = st.selectbox('Company', ['Dell', 'Apple', 'HP', 'Lenovo', 'Acer', 'Asus', 'Other'])
+    type_name = st.selectbox('Type', ['Ultrabook', 'Notebook', 'Gaming', 'Business', 'Other'])
+    inches = st.number_input('Screen Size in Inches', min_value=10.0, max_value=18.0, value=15.6, step=0.1)
+    touchscreen = st.radio('Touchscreen', ['Yes', 'No'])
+    ips = st.radio('IPS Panel', ['Yes', 'No'])
+    ppi = st.number_input('Pixels Per Inch', min_value=100, max_value=300, value=141, step=1)
+    cpu_name = st.selectbox('CPU Name', ['Intel Core i7', 'Intel Core i5', 'AMD Ryzen', 'Other'])
+    ram = st.slider('RAM in GB', min_value=4, max_value=64, value=16)
+    weight = st.number_input('Weight in Kg', min_value=0.5, max_value=5.0, value=1.8, step=0.1)
+    opsys_simple = st.selectbox('Operating System', ['Windows', 'Linux', 'Apple', 'Other'])
+    hdd = st.number_input('HDD Size in GB (if any)', min_value=0, max_value=2000, value=0, step=1)
+    ssd = st.number_input('SSD Size in GB (if any)', min_value=0, max_value=2000, value=512, step=1)
 
-# Ram
-ram = st.selectbox('Ram(in GB)', [2, 4, 6, 8, 12, 16, 24, 32, 64])
+    # Convert Yes/No to 1/0
+    touchscreen = 1 if touchscreen == 'Yes' else 0
+    ips = 1 if ips == 'Yes' else 0
 
-# weight
-weight = st.number_input("weight of the laptop")
+    if st.button('Predict Price'):
+        # Create a DataFrame from the inputs
+        input_data = pd.DataFrame({
+            'Company': [company],
+            'TypeName': [type_name],
+            'Inches': [inches],
+            'Touchscreen': [touchscreen],
+            'IPS': [ips],
+            'PPI': [ppi],
+            'CPU_Name': [cpu_name],
+            'Ram': [ram],
+            'Weight': [weight],
+            'OpSys_Simple': [opsys_simple],
+            'HDD': [hdd],
+            'SSD': [ssd]
+        })
 
-# Touchscreen
-touchscreen = st.selectbox('TouchScreen', ['NO', 'Yes'])
+        # Predict the price
+        predicted_log_price = pipeline.predict(input_data)
+        predicted_price = np.exp(predicted_log_price)
 
-# Touchscreen
-ips = st.selectbox('IPS', ['NO', 'Yes'])
+        st.success(f"Predicted Laptop Price: ${predicted_price[0]:.2f}")
 
-
-# Screen size
-Screen_size = st.number_input('Screen Size')
-
-# Resolution
-resolution = st.selectbox('Screen Resolution', ['1920x1080', '1366x768', '1600x900', '3840x2160', 
-                                                '3200x1800','2880x1800', '2560x1600', '2560x1440', 
-                                                '2304x1440'])
-
-# CPU
-cpu = st.selectbox('CPU', df['Cpu brand'].unique())
-
-# hardware
-hdd = st.selectbox('HDD(in GB)', [0, 128, 256, 512, 1024, 2048])
-ssd = st.selectbox('SSD(in GB)', [0, 8, 128, 256, 512, 1024])
-
-# GPU
-gpu = st.selectbox('GPU', df['Gpu brand'].unique())
-
-# type of OS
-os = st.selectbox('Operating System', df['os'].unique())
-
-if st.button('Predict Price'):
-
-    if touchscreen == 'Yes':
-        touchscreen = 1
-    else:
-        touchscreen = 0
-
-    if ips == 'Yes':
-        ips = 1
-    else:
-        ips = 0
-    x_res = int(resolution.split('x')[0])
-    y_res = int(resolution.split('x')[1])
-    ppi = ((x_res**2) + (y_res**2))**0.5/Screen_size
-    query = np.array([company, laptop_type, ram, weight, touchscreen, ips, ppi, cpu, hdd, ssd, gpu, os], dtype=object)
-
-    query = query.reshape(1, 12)
-    st.title("Predicted Price is $ " + str(int(np.exp(pipe.predict(query)))))
-
-
-
-
-
-
-
-
-
-
+if __name__ == '__main__':
+    run()
