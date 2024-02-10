@@ -8,6 +8,7 @@ pipeline = joblib.load('laptop_price_predictor.pkl') # This should now work corr
 
 # Streamlit app
 def run():
+    st.title('Department of Applied Mathematics and Statistics')
     st.title('Laptop Price Predictor')
 
     # Input fields
