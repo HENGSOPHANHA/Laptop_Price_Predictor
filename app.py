@@ -3,11 +3,8 @@ import pandas as pd
 import numpy as np
 import joblib
 
-# Correct path to your saved model
-model_path = 'laptop_price_predictor.pkl'  # Just pass the file path as a string
-
 # Load the trained pipeline
-pipeline = joblib.load(model_path)  # This should now work correctly
+pipeline = joblib.load('laptop_price_predictor.pkl') # This should now work correctly
 
 # Streamlit app
 def run():

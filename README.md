@@ -14,11 +14,11 @@ To run this project locally, you will need Python installed on your system. Then
 
 1. Clone this repository to your local machine.
     ```bash
-    git clone https://github.com/HENGSOPHANHA/Laptop-Price-Predictor.git
+    git clone https://github.com/HENGSOPHANHA/Laptop_Price_Predictor.git
     ```
 2. Navigate to the project directory.
     ```bash
-    cd laptop-price-predictor
+    cd laptop_price_predictor
     ```
 3. Install the required Python packages.
     ```bash
