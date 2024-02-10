@@ -5,7 +5,7 @@ import joblib
 
 # Load the trained pipeline
 pipeline = joblib.load('laptop_price_predictor.pkl') # This should now work correctly
-
+transformer = joblib.load('column_transformer.pkl')
 # Streamlit app
 def run():
     st.title('Laptop Price Predictor')
