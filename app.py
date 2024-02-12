@@ -3,8 +3,9 @@ import pandas as pd
 import numpy as np
 import joblib
 
-# Load the trained pipeline
-pipeline = joblib.load('laptop_price_predictor.pkl') # This should now work correctly
+# Load the trained model and column transformer
+pipeline = joblib.load('laptop_price_predictor.pkl')
+column_transformer = joblib.load('column_transformer.pkl')
 
 # Streamlit app
 def run():
@@ -46,11 +47,14 @@ def run():
             'SSD': [ssd]
         })
 
-        # Predict the price
-        predicted_log_price = pipeline.predict(input_data)
-        predicted_price = np.exp(predicted_log_price)
+        # Transform user input using the column transformer
+        input_transformed = column_transformer.transform(input_data)
 
-        st.success(f"Predicted Laptop Price: ${predicted_price[0]:.2f}")
+        # Predict the price
+        predicted_log_price = pipeline.predict(input_transformed)
+        predicted_price = np.exp(predicted_log_price)[0]
+
+        st.success(f"Predicted Laptop Price: ${predicted_price:.2f}")
 
 if __name__ == '__main__':
     run()
